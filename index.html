@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reflection worksheet and QI dashboard for against-staff-advice (ASA) discharge prevention.">
+  <title>My "Why" Recovery Reflection</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/src/css/styles.css">
+</head>
+
+<body>
+
+  <!-- Sign-in gate: shown only when Supabase is configured and nobody is signed in. -->
+  <div id="authGate" class="auth-gate" hidden>
+    <form id="authForm" class="auth-card" autocomplete="on">
+      <h1>My &ldquo;Why&rdquo; Recovery Reflection</h1>
+      <p class="small">Enter the shared staff password to continue.</p>
+
+      <label for="authPassword">Staff password</label>
+      <input id="authPassword" type="password" autocomplete="current-password" required>
+
+      <div id="authMessage" role="alert" aria-live="assertive"></div>
+
+      <button type="submit" id="authSubmit">Sign in</button>
+    </form>
+  </div>
+
+  <header>
+    <h1>My &ldquo;Why&rdquo; Recovery Reflection</h1>
+    <p>Slowing Down Before Deciding</p>
+    <p class="storage-mode">Storage: <span id="storageMode">This browser only</span></p>
+  </header>
+
+  <nav aria-label="Main">
+    <button type="button" data-page="worksheet" class="nav-link" aria-current="page">ASA Worksheet</button>
+    <button type="button" data-page="history" class="nav-link">Patient History</button>
+    <button type="button" data-page="dashboard" class="nav-link">QI Dashboard</button>
+    <button type="button" data-page="outcome" class="nav-link">Outcome Tracking</button>
+
+    <span class="nav-spacer"></span>
+
+    <button type="button" data-action="save-draft" class="secondary">Save Draft</button>
+    <button type="button" data-action="resume-draft" class="secondary">Resume Draft</button>
+    <button type="button" data-action="export-csv" class="secondary">Export Test Data</button>
+    <button type="button" data-action="import-csv" class="secondary">Import Test Data</button>
+    <button type="button" data-action="sign-out" class="secondary" id="signOutButton" hidden>Sign Out</button>
+    <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- WORKSHEET                                                    -->
+  <!-- ============================================================ -->
+
+  <main id="worksheet" class="container page">
+
+    <div class="warning">
+      <strong>Development / Test Version</strong><br>
+      This application stores information locally in this browser. Do not enter real patient
+      information or PHI.
+    </div>
+
+    <div class="info">
+      <strong>Purpose:</strong> This worksheet is designed to help slow down the decision-making
+      process, explore the patient's reasons for treatment, identify immediate concerns, and
+      document the patient's current decision.
+    </div>
+
+    <section class="card">
+      <h2>Client Information</h2>
+
+      <label for="clientId">Client ID</label>
+      <input id="clientId" autocomplete="off" placeholder="Example: TEST-001">
+
+      <label for="eventDate">Date</label>
+      <input id="eventDate" type="date">
+
+      <label for="staffName">Staff Assisting</label>
+      <input id="staffName" autocomplete="off">
+
+      <div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"
+        aria-label="Worksheet progress">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <p class="small">Step <span id="stepNumber">1</span> of <span id="stepTotal">6</span></p>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="step card" data-step="1">
+      <h2>Part 1: What Am I Feeling Right Now?</h2>
+      <p>Select what you are feeling.</p>
+
+      <div class="checkbox-grid" data-options="feelings"></div>
+
+      <label for="feelingOther">Other</label>
+      <input id="feelingOther" autocomplete="off">
+
+      <label for="whatHappened">What happened today that made me think about leaving?</label>
+      <textarea id="whatHappened"></textarea>
+
+      <div class="nav-buttons">
+        <span></span>
+        <button type="button" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step card" data-step="2">
+      <h2>Part 2: What Happens When I Leave Early?</h2>
+
+      <label for="pastExperience">
+        In the past, when I left treatment, detox, probation programs, or recovery support early,
+        what happened afterward?
+      </label>
+      <textarea id="pastExperience"></textarea>
+
+      <label for="pastOutcome">Did things get better, worse, or stay the same?</label>
+      <select id="pastOutcome">
+        <option value="">Select</option>
+        <option>Better</option>
+        <option>Worse</option>
+        <option>Stayed the same</option>
+        <option>Unsure</option>
+      </select>
+
+      <div class="nav-buttons">
+        <button type="button" class="secondary" data-action="back">Back</button>
+        <button type="button" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step card" data-step="3">
+      <h2>Part 3: My &ldquo;Why&rdquo;</h2>
+      <p>What made me come to treatment in the first place?</p>
+
+      <div class="checkbox-grid" data-options="why"></div>
+
+      <label for="whyOther">Other</label>
+      <input id="whyOther" autocomplete="off">
+
+      <label for="affectedPeople">Who could be affected if I left today?</label>
+      <textarea id="affectedPeople"></textarea>
+
+      <label for="futureGoal">What is one thing I still want for my future?</label>
+      <textarea id="futureGoal"></textarea>
+
+      <div class="nav-buttons">
+        <button type="button" class="secondary" data-action="back">Back</button>
+        <button type="button" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step card" data-step="4">
+      <h2>Part 4: Slowing Down the Urge</h2>
+
+      <label for="stayOneDay">What do I think will happen if I stay one more day?</label>
+      <textarea id="stayOneDay"></textarea>
+
+      <label for="leaveToday">What do I think will happen if I leave today?</label>
+      <textarea id="leaveToday"></textarea>
+
+      <p class="field-heading">Is there a problem staff can help me solve right now?</p>
+      <div class="checkbox-grid" data-options="problem"></div>
+
+      <label for="problemOther">Other</label>
+      <input id="problemOther" autocomplete="off">
+
+      <div class="nav-buttons">
+        <button type="button" class="secondary" data-action="back">Back</button>
+        <button type="button" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="step card" data-step="5">
+      <h2>Part 5: My Recovery Goals for the Next 30 Days</h2>
+
+      <div class="checkbox-grid" data-options="goal"></div>
+
+      <label for="goalOther">Other</label>
+      <input id="goalOther" autocomplete="off">
+
+      <label for="todayGoal">One goal I can focus on TODAY only:</label>
+      <textarea id="todayGoal"></textarea>
+
+      <label for="reason24">One reason to give myself 24 more hours:</label>
+      <textarea id="reason24"></textarea>
+
+      <div class="nav-buttons">
+        <button type="button" class="secondary" data-action="back">Back</button>
+        <button type="button" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="step card" data-step="6">
+      <h2>Part 6: My Support Plan</h2>
+
+      <div class="checkbox-grid" data-options="support"></div>
+
+      <label for="supportOther">Other</label>
+      <input id="supportOther" autocomplete="off">
+
+      <h3>Final Reflection</h3>
+      <label for="finalReflection" class="sr-only">Final reflection</label>
+      <textarea id="finalReflection"></textarea>
+
+      <label for="currentFeeling">Right now, after slowing down and processing, I feel:</label>
+      <textarea id="currentFeeling"></textarea>
+
+      <label for="decision">My decision at this moment is:</label>
+      <select id="decision">
+        <option value="">Select</option>
+        <option>Stay for today and revisit tomorrow</option>
+        <option>Speak with staff before deciding</option>
+        <option>Continue treatment</option>
+        <option>I still want to leave</option>
+      </select>
+
+      <label for="interventionResult">Intervention Result</label>
+      <select id="interventionResult">
+        <option value="">Select</option>
+        <option>Stayed 24 hours</option>
+        <option>Left treatment</option>
+        <option>Still undecided</option>
+        <option>Transferred</option>
+        <option>Unknown</option>
+      </select>
+
+      <label for="finalDisposition">Final Disposition</label>
+      <select id="finalDisposition">
+        <option value="">Select</option>
+        <option>Continued treatment</option>
+        <option>ASA</option>
+        <option>Transferred</option>
+        <option>Unknown</option>
+      </select>
+
+      <label for="clientSignature">Client Signature</label>
+      <input id="clientSignature" autocomplete="off">
+
+      <label for="staffSignature">Staff Signature</label>
+      <input id="staffSignature" autocomplete="off">
+
+      <label for="timeCompleted">Time Completed</label>
+      <input id="timeCompleted" type="time">
+
+      <div class="nav-buttons">
+        <button type="button" class="secondary" data-action="back">Back</button>
+        <button type="button" data-action="save-event">Save ASA Event</button>
+      </div>
+
+      <div id="saveMessage" role="status" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- PATIENT HISTORY                                              -->
+  <!-- ============================================================ -->
+
+  <div id="history" class="container page" hidden>
+    <section class="card">
+      <h2>Patient ASA History</h2>
+
+      <label for="historyClient">Client ID</label>
+      <input id="historyClient" autocomplete="off" placeholder="Example: TEST-001">
+
+      <div class="nav-buttons">
+        <span></span>
+        <button type="button" data-action="load-history">View History</button>
+      </div>
+    </section>
+
+    <div id="historyResults"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- OUTCOME TRACKING                                             -->
+  <!-- ============================================================ -->
+
+  <div id="outcome" class="container page" hidden>
+    <section class="card">
+      <h2>Outcome Tracking</h2>
+
+      <label for="outcomeClient">Client ID</label>
+      <input id="outcomeClient" autocomplete="off" placeholder="Example: TEST-001">
+
+      <label for="outcomeStatus">Outcome</label>
+      <select id="outcomeStatus">
+        <option>Stayed in treatment</option>
+        <option>Left treatment</option>
+        <option>Returned to treatment</option>
+        <option>Transferred</option>
+        <option>Discharged successfully</option>
+        <option>Unknown</option>
+      </select>
+
+      <label for="outcomePeriod">Follow-up period</label>
+      <select id="outcomePeriod">
+        <option>24 hours</option>
+        <option>48 hours</option>
+        <option>72 hours</option>
+        <option>Discharge</option>
+        <option>Follow-up</option>
+      </select>
+
+      <label for="outcomeNotes">Notes</label>
+      <textarea id="outcomeNotes"></textarea>
+
+      <div class="nav-buttons">
+        <span></span>
+        <button type="button" data-action="save-outcome">Save Outcome</button>
+      </div>
+
+      <div id="outcomeMessage" role="status" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- QI DASHBOARD                                                 -->
+  <!-- ============================================================ -->
+
+  <div id="dashboard" class="container page" hidden>
+
+    <section class="card">
+      <h2>QI Dashboard</h2>
+      <p>Aggregate Recovery Reflection / ASA statistics</p>
+      <p class="small">This dashboard is based on local test data only.</p>
+    </section>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div id="totalEvents" class="kpi-value">0</div>
+        <div class="kpi-label">Total ASA Events</div>
+      </div>
+      <div class="kpi">
+        <div id="stayRate" class="kpi-value">0%</div>
+        <div class="kpi-label">Initial Retention</div>
+        <div class="kpi-note">Decision was to stay or continue</div>
+      </div>
+      <div class="kpi">
+        <div id="asaRate" class="kpi-value">0%</div>
+        <div class="kpi-label">Final ASA Rate</div>
+        <div class="kpi-note">Final disposition recorded as ASA</div>
+      </div>
+      <div class="kpi">
+        <div id="twentyFourRate" class="kpi-value">0%</div>
+        <div class="kpi-label">24-Hour Retention</div>
+        <div class="kpi-note" id="twentyFourNote">No 24-hour follow-ups recorded</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>Why Patients Came to Treatment</h2>
+      <div id="whyChart"></div>
+    </section>
+
+    <section class="card">
+      <h2>Reasons for Wanting to Leave</h2>
+      <div id="problemChart"></div>
+    </section>
+
+    <section class="card">
+      <h2>ASA Events by Month</h2>
+      <div id="monthlyChart"></div>
+    </section>
+
+    <section class="card">
+      <h2>Outcomes</h2>
+      <div id="outcomeChart"></div>
+    </section>
+
+    <section class="card">
+      <h2>Recent ASA Events</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Client ID</th>
+              <th>Date</th>
+              <th>Decision</th>
+              <th>Disposition</th>
+            </tr>
+          </thead>
+          <tbody id="eventTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <button type="button" class="danger" data-action="clear-data">Clear All Test Data</button>
+    </section>
+
+  </div>
+
+  <script type="module" src="/src/js/main.js"></script>
+
+</body>
+
+</html>

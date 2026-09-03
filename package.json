@@ -1,0 +1,22 @@
+{
+  "name": "why-recovery-reflection",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ASA reflection worksheet, patient history, outcome tracking and QI dashboard (local test build).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "vite": "^7.1.5",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.4"
+  }
+}
